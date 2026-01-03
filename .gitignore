@@ -5,5 +5,5 @@ Cargo.lock
 # Generated latte-core (from upstream)
 build/latte-core/
 
-# Compiled static libraries
-lib/*/libcharybdis.a
+# Pre-compiled static libraries are now committed for distribution
+# (removed: lib/*/libcharybdis.a)
