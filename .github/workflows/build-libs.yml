@@ -68,8 +68,12 @@ jobs:
       - name: Build library (Windows)
         if: matrix.os == 'windows-latest'
         shell: bash
+        env:
+          OPENSSL_STATIC: 1
+          OPENSSL_VENDORED: 1
         run: |
           # Build directly with cargo, skip make to avoid WSL issues
+          # Use vendored OpenSSL to avoid pkg-config dependency
           mkdir -p lib/${{ matrix.platform }}
           cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
           cp target/${{ matrix.target }}/release/libcharybdis_ffi.a lib/${{ matrix.platform }}/libcharybdis.a
