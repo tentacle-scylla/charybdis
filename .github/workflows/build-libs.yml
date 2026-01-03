@@ -73,16 +73,15 @@ jobs:
 
       - name: Build library (Windows)
         if: matrix.os == 'windows-latest'
-        shell: bash
         env:
           PKG_CONFIG_PATH: C:\tools\msys64\mingw64\lib\pkgconfig
-          PATH: C:\tools\msys64\mingw64\bin;${{ env.PATH }}
         run: |
           # Build directly with cargo, skip make to avoid WSL issues
-          mkdir -p lib/${{ matrix.lib_dir }}
+          $env:PATH = "C:\tools\msys64\mingw64\bin;$env:PATH"
+          New-Item -ItemType Directory -Force -Path lib\${{ matrix.lib_dir }}
           cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
-          cp target/${{ matrix.target }}/release/libcharybdis_ffi.a lib/${{ matrix.lib_dir }}/libcharybdis.a
-          echo "[charybdis] built: lib/${{ matrix.lib_dir }}/libcharybdis.a"
+          Copy-Item target\${{ matrix.target }}\release\libcharybdis_ffi.a lib\${{ matrix.lib_dir }}\libcharybdis.a
+          Write-Host "[charybdis] built: lib\${{ matrix.lib_dir }}\libcharybdis.a"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
