@@ -1,0 +1,9 @@
+# Rust build artifacts
+target/
+Cargo.lock
+
+# Generated latte-core (from upstream)
+build/latte-core/
+
+# Compiled static libraries
+lib/*/libcharybdis.a

@@ -1,0 +1,12 @@
+[workspace]
+resolver = "2"
+members = [
+    "build/latte-core",
+    "adapter",
+    "ffi",
+]
+
+[profile.release]
+codegen-units = 1
+lto = true
+panic = "abort"
