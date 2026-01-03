@@ -7,7 +7,7 @@ package charybdis
 #cgo darwin,arm64 LDFLAGS: -L${SRCDIR}/lib/darwin_arm64 -lcharybdis -ldl -lm -framework Security -framework CoreFoundation -L/opt/homebrew/opt/openssl@3/lib -lssl -lcrypto
 #cgo darwin,amd64 LDFLAGS: -L${SRCDIR}/lib/darwin_amd64 -lcharybdis -ldl -lm -framework Security -framework CoreFoundation -L/usr/local/opt/openssl@3/lib -lssl -lcrypto
 #cgo linux,amd64 LDFLAGS: -L${SRCDIR}/lib/linux_amd64 -lcharybdis -ldl -lm -lpthread -lssl -lcrypto
-#cgo windows,amd64 LDFLAGS: -L${SRCDIR}/lib/windows_amd64 -lcharybdis -lws2_32 -luserenv -lbcrypt -lssl -lcrypto
+#cgo windows,amd64 LDFLAGS: -L${SRCDIR}/lib/windows_amd64 -lcharybdis -lws2_32 -luserenv -lbcrypt
 
 #include <stdlib.h>
 #include "charybdis.h"

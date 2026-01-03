@@ -33,7 +33,7 @@ TARGET_LINUX_AMD64 := x86_64-unknown-linux-gnu
 TARGET_LINUX_ARM64 := aarch64-unknown-linux-gnu
 TARGET_DARWIN_AMD64 := x86_64-apple-darwin
 TARGET_DARWIN_ARM64 := aarch64-apple-darwin
-TARGET_WINDOWS_AMD64 := x86_64-pc-windows-gnu
+TARGET_WINDOWS_AMD64 := x86_64-pc-windows-msvc
 
 .PHONY: all submodule setup build clean test help build-all
 .PHONY: build-linux-amd64 build-linux-arm64 build-darwin-amd64 build-darwin-arm64 build-windows-amd64

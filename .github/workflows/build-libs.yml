@@ -34,7 +34,7 @@ jobs:
           - os: windows-latest
             platform: windows-amd64
             lib_dir: windows_amd64
-            target: x86_64-pc-windows-gnu
+            target: x86_64-pc-windows-msvc
 
     steps:
       - name: Checkout code
@@ -63,10 +63,9 @@ jobs:
       - name: Install dependencies (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          # Install MSYS2 and required packages
-          choco install msys2 -y
-          C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
-          C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-openssl mingw-w64-x86_64-pkgconf"
+          # Install Strawberry Perl for OpenSSL build (needed for vendored OpenSSL)
+          choco install strawberryperl -y
+          refreshenv
 
       - name: Build library (Unix)
         if: matrix.os != 'windows-latest'
@@ -80,13 +79,13 @@ jobs:
       - name: Build library (Windows)
         if: matrix.os == 'windows-latest'
         env:
-          PKG_CONFIG_PATH: C:\tools\msys64\mingw64\lib\pkgconfig
+          OPENSSL_STATIC: 1
+          OPENSSL_VENDORED: 1
         run: |
-          # Build directly with cargo, skip make to avoid WSL issues
-          $env:PATH = "C:\tools\msys64\mingw64\bin;$env:PATH"
+          # Build with MSVC target using vendored OpenSSL
           New-Item -ItemType Directory -Force -Path lib\${{ matrix.lib_dir }}
           cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
-          Copy-Item target\${{ matrix.target }}\release\libcharybdis_ffi.a lib\${{ matrix.lib_dir }}\libcharybdis.a
+          Copy-Item target\${{ matrix.target }}\release\charybdis_ffi.lib lib\${{ matrix.lib_dir }}\libcharybdis.a
           Write-Host "[charybdis] built: lib\${{ matrix.lib_dir }}\libcharybdis.a"
 
       - name: Upload artifact
