@@ -40,6 +40,9 @@ jobs:
         path: target
         key: ${{ runner.os }}-target-${{ hashFiles('**/Cargo.lock') }}
 
+    - name: Setup upstream
+      run: make setup
+
     - name: Build Rust adapter
       run: cargo build --release -p charybdis
 
@@ -68,6 +71,9 @@ jobs:
 
     - name: Set up Rust
       uses: dtolnay/rust-toolchain@stable
+
+    - name: Setup upstream
+      run: make setup
 
     - name: Build FFI library
       run: |
