@@ -21,15 +21,19 @@ jobs:
         include:
           - os: ubuntu-latest
             platform: linux-amd64
+            lib_dir: linux_amd64
             target: x86_64-unknown-linux-gnu
           - os: macos-15-intel # Intel Mac (available until Aug 2027)
             platform: darwin-amd64
+            lib_dir: darwin_amd64
             target: x86_64-apple-darwin
           - os: macos-latest # ARM Mac
             platform: darwin-arm64
+            lib_dir: darwin_arm64
             target: aarch64-apple-darwin
           - os: windows-latest
             platform: windows-amd64
+            lib_dir: windows_amd64
             target: x86_64-pc-windows-gnu
 
     steps:
@@ -75,16 +79,16 @@ jobs:
           PATH: C:\tools\msys64\mingw64\bin;${{ env.PATH }}
         run: |
           # Build directly with cargo, skip make to avoid WSL issues
-          mkdir -p lib/${{ matrix.platform }}
+          mkdir -p lib/${{ matrix.lib_dir }}
           cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
-          cp target/${{ matrix.target }}/release/libcharybdis_ffi.a lib/${{ matrix.platform }}/libcharybdis.a
-          echo "[charybdis] built: lib/${{ matrix.platform }}/libcharybdis.a"
+          cp target/${{ matrix.target }}/release/libcharybdis_ffi.a lib/${{ matrix.lib_dir }}/libcharybdis.a
+          echo "[charybdis] built: lib/${{ matrix.lib_dir }}/libcharybdis.a"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: libcharybdis-${{ matrix.platform }}
-          path: lib/${{ matrix.platform }}/libcharybdis.a
+          path: lib/${{ matrix.lib_dir }}/libcharybdis.a
           if-no-files-found: error
 
   commit-and-tag:
