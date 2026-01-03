@@ -59,13 +59,20 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: make build-${{ matrix.platform }}
 
+      - name: Setup upstream (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: ./scripts/setup-upstream.sh
+
       - name: Build library (Windows)
         if: matrix.os == 'windows-latest'
         shell: bash
         run: |
-          # Run setup manually with Git Bash
-          ./scripts/setup-upstream.sh
-          make build-${{ matrix.platform }}
+          # Build directly with cargo, skip make to avoid WSL issues
+          mkdir -p lib/${{ matrix.platform }}
+          cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
+          cp target/${{ matrix.target }}/release/libcharybdis_ffi.a lib/${{ matrix.platform }}/libcharybdis.a
+          echo "[charybdis] built: lib/${{ matrix.platform }}/libcharybdis.a"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
