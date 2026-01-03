@@ -53,8 +53,10 @@ jobs:
       - name: Install dependencies (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          # MinGW for x86_64-pc-windows-gnu target
-          choco install mingw
+          # Install MSYS2 and required packages
+          choco install msys2 -y
+          C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
+          C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-openssl mingw-w64-x86_64-pkgconf"
 
       - name: Build library (Unix)
         if: matrix.os != 'windows-latest'
@@ -69,11 +71,10 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: bash
         env:
-          OPENSSL_STATIC: 1
-          OPENSSL_VENDORED: 1
+          PKG_CONFIG_PATH: C:\tools\msys64\mingw64\lib\pkgconfig
+          PATH: C:\tools\msys64\mingw64\bin;${{ env.PATH }}
         run: |
           # Build directly with cargo, skip make to avoid WSL issues
-          # Use vendored OpenSSL to avoid pkg-config dependency
           mkdir -p lib/${{ matrix.platform }}
           cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
           cp target/${{ matrix.target }}/release/libcharybdis_ffi.a lib/${{ matrix.platform }}/libcharybdis.a
