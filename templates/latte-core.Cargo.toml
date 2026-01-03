@@ -21,7 +21,6 @@ futures = "0.3"
 hdrhistogram = "7.1.0"
 hytra = "0.1.2"
 itertools = "0.13"
-jemallocator = "0.5"
 lazy_static = "1.4.0"
 metrohash = "1.0"
 more-asserts = "0.3"
@@ -56,6 +55,12 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 try-lock = "0.2.3"
 uuid = { version = "1.1", features = ["v4"] }
 walkdir = "2"
+
+
+
+# Platform-specific dependencies
+[target.'cfg(not(windows))'.dependencies]
+jemallocator = "0.5"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(fetch_extended_version_info)'] }
