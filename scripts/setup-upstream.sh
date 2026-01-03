@@ -36,6 +36,11 @@ sed "s/\${UPSTREAM_VERSION}/$UPSTREAM_VERSION/g" "$TEMPLATES_DIR/latte-core.Carg
 cp "$TEMPLATES_DIR/latte-core.lib.rs" "$BUILD_DIR/latte-core/src/lib.rs"
 cp "$TEMPLATES_DIR/latte-core.build.rs" "$BUILD_DIR/latte-core/build.rs"
 
+# Remove unused imports to fix compilation warnings
+log "removing unused imports..."
+sed -i.bak '/^use tokio::pin;$/d' "$BUILD_DIR/latte-core/src/exec/mod.rs"
+rm -f "$BUILD_DIR/latte-core/src/exec/mod.rs.bak"
+
 # Append callback variant to exec/mod.rs
 log "adding par_execute_with_callback..."
 cat "$TEMPLATES_DIR/exec_callback.rs" >> "$BUILD_DIR/latte-core/src/exec/mod.rs"
