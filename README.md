@@ -1,5 +1,10 @@
 # Charybdis
 
+[![CI](https://github.com/tentacle-scylla/charybdis/workflows/CI/badge.svg)](https://github.com/tentacle-scylla/charybdis/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tentacle-scylla/charybdis)](https://goreportcard.com/report/github.com/tentacle-scylla/charybdis)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/tentacle-scylla/charybdis)](https://pkg.go.dev/github.com/tentacle-scylla/charybdis)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 Go bindings for ScyllaDB/Cassandra benchmarking via Rust FFI. Provides a clean API wrapper around [latte](https://github.com/scylladb/latte) for validating CQL workload scripts and running benchmarks.
 
 ## Features
