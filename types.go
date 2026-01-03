@@ -90,8 +90,8 @@ type benchmarkConfigJSON struct {
 	Threads            int         `json:"threads,omitempty"`
 	Concurrency        int64       `json:"concurrency,omitempty"`
 	RateLimit          float64     `json:"rate_limit,omitempty"`
-	Duration           uint64      `json:"duration,omitempty"`           // seconds
-	Warmup             uint64      `json:"warmup,omitempty"`             // seconds
+	Duration           uint64      `json:"duration,omitempty"`          // seconds
+	Warmup             uint64      `json:"warmup,omitempty"`            // seconds
 	SamplingInterval   uint64      `json:"sampling_interval,omitempty"` // seconds
 	Consistency        Consistency `json:"consistency,omitempty"`
 	ConnectionsPerHost int         `json:"connections_per_host,omitempty"`
@@ -137,7 +137,7 @@ type WorkloadConfig struct {
 type Phase string
 
 const (
-	PhasePreparing Phase = "preparing"
+	PhasePreparing  Phase = "preparing"
 	PhaseConnecting Phase = "connecting"
 	PhaseSchema     Phase = "schema"
 	PhasePrepare    Phase = "prepare"
@@ -162,10 +162,10 @@ func (d RustDuration) Milliseconds() int64 {
 
 // IntervalStats contains statistics for a sampling interval
 type IntervalStats struct {
-	OpsCount     int64               `json:"ops_count"`
-	OpsPerSecond float64             `json:"ops_per_second"`
-	ErrorCount   int64               `json:"error_count"`
-	ErrorRate    float64             `json:"error_rate"`
+	OpsCount     int64                `json:"ops_count"`
+	OpsPerSecond float64              `json:"ops_per_second"`
+	ErrorCount   int64                `json:"error_count"`
+	ErrorRate    float64              `json:"error_rate"`
 	Latency      IntervalLatencyStats `json:"latency"`
 }
 

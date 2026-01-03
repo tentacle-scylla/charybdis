@@ -54,7 +54,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        go-version: ['1.22', '1.23']
+        go-version: ['1.23', '1.24', '1.25']
 
     steps:
     - uses: actions/checkout@v4
@@ -77,3 +77,27 @@ jobs:
 
     - name: Test Go bindings
       run: go test -v ./...
+  lint-go:
+    name: Lint Go Code
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.25'
+
+    - name: Check formatting
+      run: |
+        if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
+          echo "The following files are not formatted with gofmt -s:"
+          gofmt -s -l .
+          exit 1
+        fi
+
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v8
+      with:
+        version: v2.5.0

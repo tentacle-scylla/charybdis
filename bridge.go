@@ -40,7 +40,7 @@ import (
 // Session callback registry
 var (
 	callbackMu   sync.RWMutex
-	callbackMap  = make(map[uintptr]ProgressCallback)
+	callbackMap          = make(map[uintptr]ProgressCallback)
 	callbackNext uintptr = 1
 )
 
@@ -220,9 +220,7 @@ func validateScript(script string) ([]ScriptError, error) {
 
 	// Handle DIAG_JSON: prefix from structured diagnostics
 	const diagPrefix = "DIAG_JSON:"
-	if strings.HasPrefix(errorsJSON, diagPrefix) {
-		errorsJSON = strings.TrimPrefix(errorsJSON, diagPrefix)
-	}
+	errorsJSON = strings.TrimPrefix(errorsJSON, diagPrefix)
 
 	var errors []ScriptError
 	if err := json.Unmarshal([]byte(errorsJSON), &errors); err != nil {
