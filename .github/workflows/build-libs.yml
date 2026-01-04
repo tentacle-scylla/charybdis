@@ -34,7 +34,7 @@ jobs:
           - os: windows-latest
             platform: windows-amd64
             lib_dir: windows_amd64
-            target: x86_64-pc-windows-msvc
+            target: x86_64-pc-windows-gnu
 
     steps:
       - name: Checkout code
@@ -87,13 +87,12 @@ jobs:
       - name: Build library (Windows)
         if: matrix.os == 'windows-latest'
         env:
-          OPENSSL_STATIC: 1
           OPENSSL_VENDORED: 1
         run: |
-          # Build with MSVC target using vendored OpenSSL
+          # Build with MinGW target using vendored OpenSSL
           New-Item -ItemType Directory -Force -Path lib\${{ matrix.lib_dir }}
           cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
-          Copy-Item target\${{ matrix.target }}\release\charybdis_ffi.lib lib\${{ matrix.lib_dir }}\libcharybdis.a
+          Copy-Item target\${{ matrix.target }}\release\libcharybdis_ffi.a lib\${{ matrix.lib_dir }}\libcharybdis.a
           Write-Host "[charybdis] built: lib\${{ matrix.lib_dir }}\libcharybdis.a"
 
       - name: Upload artifact
