@@ -86,10 +86,12 @@ jobs:
 
       - name: Build library (Windows)
         if: matrix.os == 'windows-latest'
-        env:
-          OPENSSL_VENDORED: 1
         run: |
-          # Build with MinGW target using vendored OpenSSL
+          # Build with MinGW target using vendored OpenSSL (built from source)
+          # Force vendored OpenSSL by setting environment variables
+          $env:OPENSSL_VENDORED = "1"
+          $env:OPENSSL_STATIC = "1"
+          $env:OPENSSL_NO_PKG_CONFIG = "1"
           New-Item -ItemType Directory -Force -Path lib\${{ matrix.lib_dir }}
           cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
           Copy-Item target\${{ matrix.target }}\release\libcharybdis_ffi.a lib\${{ matrix.lib_dir }}\libcharybdis.a
