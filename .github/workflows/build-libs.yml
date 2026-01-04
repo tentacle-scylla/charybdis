@@ -90,6 +90,9 @@ jobs:
           OPENSSL_VENDORED: "1"
           OPENSSL_STATIC: "1"
           OPENSSL_NO_PKG_CONFIG: "1"
+          X86_64_PC_WINDOWS_GNU_OPENSSL_VENDORED: "1"
+          X86_64_PC_WINDOWS_GNU_OPENSSL_STATIC: "1"
+          X86_64_PC_WINDOWS_GNU_OPENSSL_NO_PKG_CONFIG: "1"
         run: |
           # Build with MinGW target using vendored OpenSSL (built from source)
           New-Item -ItemType Directory -Force -Path lib\${{ matrix.lib_dir }}
