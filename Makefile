@@ -36,7 +36,7 @@ TARGET_DARWIN_ARM64 := aarch64-apple-darwin
 TARGET_WINDOWS_AMD64 := x86_64-pc-windows-msvc
 
 .PHONY: all submodule setup build clean test help build-all fmt lint release
-.PHONY: build-linux-amd64 build-linux-arm64 build-darwin-amd64 build-darwin-arm64 build-windows-amd64
+.PHONY: build-linux-amd64 build-linux-arm64 build-darwin-amd64 build-darwin-arm64
 
 .DEFAULT_GOAL := help
 
@@ -90,14 +90,15 @@ build-darwin-arm64: setup ## Build for macOS ARM64 (Apple Silicon)
 	@cp target/$(TARGET_DARWIN_ARM64)/release/libcharybdis_ffi.a $(LIB_DIR)/darwin_arm64/libcharybdis.a
 	@echo "[charybdis] built: $(LIB_DIR)/darwin_arm64/libcharybdis.a"
 
-build-windows-amd64: setup ## Build for Windows AMD64
-	@echo "[charybdis] building for windows_amd64..."
-	@mkdir -p $(LIB_DIR)/windows_amd64
-	cargo build --release --target $(TARGET_WINDOWS_AMD64) -p charybdis-ffi
-	@cp target/$(TARGET_WINDOWS_AMD64)/release/libcharybdis_ffi.a $(LIB_DIR)/windows_amd64/libcharybdis.a
-	@echo "[charybdis] built: $(LIB_DIR)/windows_amd64/libcharybdis.a"
+# Windows builds disabled - not currently supported
+# build-windows-amd64: setup ## Build for Windows AMD64
+# 	@echo "[charybdis] building for windows_amd64..."
+# 	@mkdir -p $(LIB_DIR)/windows_amd64
+# 	cargo build --release --target $(TARGET_WINDOWS_AMD64) -p charybdis-ffi
+# 	@cp target/$(TARGET_WINDOWS_AMD64)/release/libcharybdis_ffi.a $(LIB_DIR)/windows_amd64/libcharybdis.a
+# 	@echo "[charybdis] built: $(LIB_DIR)/windows_amd64/libcharybdis.a"
 
-build-all: build-linux-amd64 build-darwin-amd64 build-darwin-arm64 build-windows-amd64 ## Build for all common platforms
+build-all: build-linux-amd64 build-darwin-amd64 build-darwin-arm64 ## Build for all common platforms
 
 clean: ## Clean all build artifacts
 	rm -rf build/latte-core

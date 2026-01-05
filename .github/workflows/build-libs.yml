@@ -31,10 +31,11 @@ jobs:
             platform: darwin-arm64
             lib_dir: darwin_arm64
             target: aarch64-apple-darwin
-          - os: windows-latest
-            platform: windows-amd64
-            lib_dir: windows_amd64
-            target: x86_64-pc-windows-gnu
+          # Windows builds disabled - not currently supported
+          # - os: windows-latest
+          #   platform: windows-amd64
+          #   lib_dir: windows_amd64
+          #   target: x86_64-pc-windows-gnu
 
     steps:
       - name: Checkout code
@@ -64,41 +65,41 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libssl-dev pkg-config
 
-      - name: Cache vcpkg packages
-        if: matrix.os == 'windows-latest'
-        uses: actions/cache@v4
-        with:
-          path: C:\vcpkg\installed
-          key: vcpkg-${{ matrix.platform }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            vcpkg-${{ matrix.platform }}-
+      # Windows builds disabled
+      # - name: Cache vcpkg packages
+      #   if: matrix.os == 'windows-latest'
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: C:\vcpkg\installed
+      #     key: vcpkg-${{ matrix.platform }}-${{ hashFiles('**/Cargo.lock') }}
+      #     restore-keys: |
+      #       vcpkg-${{ matrix.platform }}-
 
-      - name: Install dependencies (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          # Install OpenSSL via vcpkg
-          vcpkg install openssl:x64-windows-static-md
-          vcpkg integrate install
+      # - name: Install dependencies (Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     # Install OpenSSL via vcpkg
+      #     vcpkg install openssl:x64-windows-static-md
+      #     vcpkg integrate install
 
-      - name: Build library (Unix)
-        if: matrix.os != 'windows-latest'
+      - name: Build library
         run: make build-${{ matrix.platform }}
 
-      - name: Build library (Windows)
-        if: matrix.os == 'windows-latest'
-        env:
-          OPENSSL_VENDORED: "1"
-          OPENSSL_STATIC: "1"
-          OPENSSL_NO_PKG_CONFIG: "1"
-          X86_64_PC_WINDOWS_GNU_OPENSSL_VENDORED: "1"
-          X86_64_PC_WINDOWS_GNU_OPENSSL_STATIC: "1"
-          X86_64_PC_WINDOWS_GNU_OPENSSL_NO_PKG_CONFIG: "1"
-        run: |
-          # Build with MinGW target using vendored OpenSSL (built from source)
-          New-Item -ItemType Directory -Force -Path lib\${{ matrix.lib_dir }}
-          cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
-          Copy-Item target\${{ matrix.target }}\release\libcharybdis_ffi.a lib\${{ matrix.lib_dir }}\libcharybdis.a
-          Write-Host "[charybdis] built: lib\${{ matrix.lib_dir }}\libcharybdis.a"
+      # - name: Build library (Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   env:
+      #     OPENSSL_VENDORED: "1"
+      #     OPENSSL_STATIC: "1"
+      #     OPENSSL_NO_PKG_CONFIG: "1"
+      #     X86_64_PC_WINDOWS_GNU_OPENSSL_VENDORED: "1"
+      #     X86_64_PC_WINDOWS_GNU_OPENSSL_STATIC: "1"
+      #     X86_64_PC_WINDOWS_GNU_OPENSSL_NO_PKG_CONFIG: "1"
+      #   run: |
+      #     # Build with MinGW target using vendored OpenSSL (built from source)
+      #     New-Item -ItemType Directory -Force -Path lib\${{ matrix.lib_dir }}
+      #     cargo build --release --target ${{ matrix.target }} -p charybdis-ffi
+      #     Copy-Item target\${{ matrix.target }}\release\libcharybdis_ffi.a lib\${{ matrix.lib_dir }}\libcharybdis.a
+      #     Write-Host "[charybdis] built: lib\${{ matrix.lib_dir }}\libcharybdis.a"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -126,11 +127,10 @@ jobs:
 
       - name: Copy libraries to lib directory
         run: |
-          mkdir -p lib/linux_amd64 lib/darwin_amd64 lib/darwin_arm64 lib/windows_amd64
+          mkdir -p lib/linux_amd64 lib/darwin_amd64 lib/darwin_arm64
           cp artifacts/libcharybdis-linux-amd64/libcharybdis.a lib/linux_amd64/
           cp artifacts/libcharybdis-darwin-amd64/libcharybdis.a lib/darwin_amd64/
           cp artifacts/libcharybdis-darwin-arm64/libcharybdis.a lib/darwin_arm64/
-          cp artifacts/libcharybdis-windows-amd64/libcharybdis.a lib/windows_amd64/
 
       - name: Extract version from Cargo.toml
         id: version
@@ -186,6 +186,5 @@ jobs:
             - Linux AMD64
             - macOS AMD64 (Intel)
             - macOS ARM64 (Apple Silicon)
-            - Windows AMD64
           draft: false
           prerelease: false
