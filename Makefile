@@ -35,7 +35,7 @@ TARGET_DARWIN_AMD64 := x86_64-apple-darwin
 TARGET_DARWIN_ARM64 := aarch64-apple-darwin
 TARGET_WINDOWS_AMD64 := x86_64-pc-windows-msvc
 
-.PHONY: all submodule setup build clean test help build-all
+.PHONY: all submodule setup build clean test help build-all fmt lint release
 .PHONY: build-linux-amd64 build-linux-arm64 build-darwin-amd64 build-darwin-arm64 build-windows-amd64
 
 .DEFAULT_GOAL := help
@@ -108,5 +108,30 @@ clean: ## Clean all build artifacts
 test: ## Run tests
 	cargo test --workspace
 
+fmt: ## Format Rust code
+	cargo fmt --all
+
+lint: ## Run Clippy linter
+	cargo clippy --workspace --all-targets -- -D warnings
+
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+# Release target - runs all validation before creating a release
+# Usage: make release VERSION=v0.1.0
+release: fmt lint test
+	@echo "All checks passed!"
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION not specified. Usage: make release VERSION=v0.1.0"; \
+		exit 1; \
+	fi
+	@echo "Creating release $(VERSION)..."
+	@if git diff --quiet; then \
+		echo "Working directory is clean"; \
+	else \
+		echo "Error: Working directory has uncommitted changes."; \
+		exit 1; \
+	fi
+	git push origin main
+	gh release create $(VERSION) --generate-notes --latest
+	@echo "Release $(VERSION) created and published!"
